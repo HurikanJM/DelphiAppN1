@@ -15,6 +15,12 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Bevel1: TBevel
+    Left = 384
+    Top = 463
+    Width = 350
+    Height = 41
+  end
   object MenuPanel: TPanel
     Left = 0
     Top = 0
@@ -32,15 +38,16 @@ object MainForm: TMainForm
       TabOrder = 0
       OnClick = PLCMenu
     end
-    object BtnFiles: TButton
-      Left = 292
+    object BtnSetting: TButton
+      Left = 389
       Top = 1
       Width = 97
       Height = 39
       Align = alLeft
-      Caption = 'Files'
+      Caption = 'Nastaven'#237' Prom'
       TabOrder = 1
-      OnClick = FilesMenu
+      OnClick = NastaveniClicked
+      ExplicitLeft = 292
     end
     object BtnDB: TButton
       Left = 195
@@ -71,20 +78,30 @@ object MainForm: TMainForm
       TabOrder = 4
       OnClick = btnlogin
     end
+    object Button2: TButton
+      Left = 292
+      Top = 1
+      Width = 97
+      Height = 39
+      Align = alLeft
+      Caption = 'Files'
+      TabOrder = 5
+      OnClick = NastaveniClicked
+    end
   end
   object TimerPanel: TPanel
     Left = 0
     Top = 463
-    Width = 734
+    Width = 389
     Height = 41
-    Align = alBottom
+    Align = alCustom
     Color = clMedGray
     ParentBackground = False
     TabOrder = 1
     object Time: TLabel
       Left = 1
       Top = 7
-      Width = 732
+      Width = 387
       Height = 33
       ParentCustomHint = False
       Align = alBottom
@@ -128,6 +145,44 @@ object MainForm: TMainForm
       Caption = 'Zm'#283'na jazyka'
       TabOrder = 0
       OnClick = SelectLanguage
+    end
+  end
+  object Panel2: TPanel
+    Left = 395
+    Top = 470
+    Width = 331
+    Height = 26
+    Color = clMedGray
+    ParentBackground = False
+    TabOrder = 3
+    object UName: TPanel
+      Left = 117
+      Top = 0
+      Width = 124
+      Height = 25
+      TabOrder = 0
+    end
+    object Panel4: TPanel
+      Left = 78
+      Top = 0
+      Width = 33
+      Height = 25
+      TabOrder = 1
+    end
+    object Panel15: TPanel
+      Left = 0
+      Top = 0
+      Width = 33
+      Height = 25
+      ParentColor = True
+      TabOrder = 2
+    end
+    object Panel6: TPanel
+      Left = 39
+      Top = 0
+      Width = 33
+      Height = 25
+      TabOrder = 3
     end
   end
   object PopupMenuPLC: TPopupMenu
@@ -194,5 +249,20 @@ object MainForm: TMainForm
     OnTimer = OnTimer
     Left = 480
     Top = 80
+  end
+  object ImageList1: TImageList
+    Left = 520
+    Top = 304
+  end
+  object ActionManager1: TActionManager
+    Left = 216
+    Top = 264
+    StyleName = 'Platform Default'
+  end
+  object FooterTimer: TTimer
+    Interval = 2000
+    OnTimer = FooterTimerTimer
+    Left = 344
+    Top = 471
   end
 end

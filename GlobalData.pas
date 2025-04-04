@@ -10,9 +10,14 @@ TLanguage = (langCZ, langEN);
 const
  LanguageNames: array[TLanguage] of string = ('Èeština', 'English');
  UsersFilePath: string = 'Log\users.txt';
+ GridFilePath: string = 'Txt\Graf.txt';
 
   mrLogin = 1; // Místo mrOK pro RadioButtony na pøihlašování
   mrRegister = 2;
+ // PermAdnim = 0;
+ // PermMod = 1;
+ // PermUser = 2;
+
 var
 ConnectedToPLC : Boolean;  // Pøipojení OK or No
 EnableCom: Boolean;  // Povolení jestli se komunikace propíše
@@ -22,6 +27,12 @@ Logged: Boolean = False;  // 0 není - 1 je pøihlášen  Inic. na false ze zaèátku
 LoginSelected: Boolean; // Pro urèení zobrazení v Log.pas jestli 0-1 Login-Registrace
 IsKesat: Boolean;
 taskSoubor: string;
+GridWidth: Integer = 315; // Šíøka TNiceGrid
+GridHeight: Integer = 500;  //Výška TNiceGrid
+//GrafInfo: Integer; // Informace o grafu jaký se používá v Unit2 a Dialog
+UserRole: Integer; // Pøidáno pro uložení role
+
+
 
 PLC_IP: string;
 PLC_Rack: Integer;

@@ -22,7 +22,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnRegisterClick(Sender: TObject);
    // procedure btnLoginClick(Sender: TObject);      // Pøidáno
-   // procedure btnRegisterClick(Sender: TObject);   // Pøidáno
+
   private
     { Private declarations }
    // procedure UpdateFormState;
@@ -48,8 +48,8 @@ procedure TForm11.btnActionClick(Sender: TObject);
 var
 Users: TStringList;
 i: Integer;
-UserInfo: array[0..1] of string; // nefunguje SplitString až v novìjších verzích
-CommaPos: Integer;
+UserInfo: array[0..2] of string; // 3 0 admin 1 mod 2 user
+CommaPos1, CommaPos2: Integer;
 begin
  Users := TStringList.Create;
  try
@@ -59,6 +59,7 @@ begin
   ShowMessage('Pøihlášení úspìšnì jako Kesat');
   GlobalData.Logged := True;
   GlobalData.IsKesat := True;
+  GlobalData.UserRole := 0;   // Kesat je admin
   ModalResult := mrOk;
   Exit;
   end;
@@ -71,19 +72,25 @@ begin
  Users.LoadFromFile(GlobalData.UsersFilePath);
  for i := 0 to Users.Count - 1 do
    begin
-     CommaPos := Pos(',', Users[i]);
-     if CommaPos > 0 then
+     CommaPos1 := Pos(',', Users[i]);
+     if CommaPos1 > 0 then
      begin
-       UserInfo[0] := Copy(Users[i], 1, CommaPos -1);
-       UserInfo[1] := Copy(Users[i],CommaPos + 1, Length(Users[i]));
+     CommaPos2:=Pos(',', Copy(Users[i], CommaPos1 + 1, Length(Users[i]) - CommaPos1)) + CommaPos1;
+     if CommaPos2 > CommaPos1 then
+      begin
+       UserInfo[0] := Copy(Users[i], 1, CommaPos1 - 1);
+       UserInfo[1] := Copy(Users[i],CommaPos1 + 1, CommaPos2 - CommaPos1 - 1);
+       UserInfo[2] := Copy(Users[i], CommaPos2 + 1, Length(Users[i]) - CommaPos2); // Oprava: Extrakce role
        if (UserInfo[0] = edtUsername.Text) and (UserInfo[1] = edtPassword.Text) then
-       begin
-         ShowMessage('Pøihlášení úspìšné.');
+        begin
+        ShowMessage('Pøihlášení úspìšné.');
          GlobalData.Logged := True;
          GlobalData.IsKesat := False;
+         GlobalData.UserRole := StrToInt(UserInfo[2]); // Uložení role
          ModalResult := mrOk;
          Exit;
-       end;
+        end;
+      end;
      end;
    end;
    ShowMessage('Neplatné uživatelské jméno nebo heslo.');
@@ -97,8 +104,9 @@ procedure TForm11.btnRegisterClick(Sender: TObject);
 var
 Users: TStringList;
 i: Integer;
-UserInfo: array[0..1] of string;
-CommaPos: Integer;
+UserInfo: array[0..2] of string;
+CommaPos1, CommaPos2: Integer;
+Role: Integer;
 begin
   Users := TStringList.Create;
   try
@@ -107,20 +115,26 @@ begin
       Users.LoadFromFile(GlobalData.UsersFilePath);
       for i := 0 to Users.Count - 1 do
         begin
-          CommaPos := Pos(',', Users[i]);
-          if CommaPos > 0 then
+          CommaPos1 := Pos(',', Users[i]);
+          if CommaPos1 > 0 then
           begin
-            UserInfo[0] := Copy(Users[i], 1, CommaPos - 1);
-            if UserInfo[0] = edtUsername.Text then
+            CommaPos2 := Pos(',', Copy(Users[i], CommaPos1 + 1, Length(Users[i])));
+            if CommaPos2 > 0 then
             begin
+            UserInfo[0] := Copy(Users[i], 1, CommaPos1 - 1);
+            if UserInfo[0] = edtUsername.Text then
+              begin
               ShowMessage('Uživatelské jméno již existuje.');
               Exit;
+              end;
             end;
           end;
         end;
     end;
-
-    Users.Add(edtUsername.Text + ',' + edtPassword.Text);
+    // Zde byste mìli pøidat dialog pro výbìr role (0, 1, 2)
+    // Pro jednoduchost pøedpokládám, že role je vždy 2 (user)
+    Role := 2;
+    Users.Add(edtUsername.Text + ',' + edtPassword.Text + ',' + IntToStr(Role));
     Users.SaveToFile(GlobalData.UsersFilePath);
     ShowMessage('Uživatel byl Registrován');
   finally

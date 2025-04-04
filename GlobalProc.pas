@@ -5,6 +5,7 @@ interface
 uses
 GlobalData, Vcl.Forms, Vcl.StdCtrls;
 
+function GetCurrentTime: string;
 procedure SetLoginSelected(Value: Boolean);
 procedure SetButtonCaption(Form: TForm; Caption: string);
 procedure HandleLoginClick(SelectForm: TForm);
@@ -12,6 +13,9 @@ procedure HandleRegisterClick(SelectForm: TForm);
 
 
 implementation
+
+uses
+System.SysUtils;
 
 procedure SetLoginSelected(Value: Boolean);
 begin
@@ -41,4 +45,8 @@ begin
   SelectForm.ModalResult := 2;//Nastavení na 2 (mrRegister)
 end;
 
+function GetCurrentTime: string;
+begin
+  Result := FormatDateTime('dd.mm.yyyy hh:mm:ss', Now);
+end;
 end.

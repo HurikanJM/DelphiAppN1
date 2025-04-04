@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Menus, ModBusCom, Unit1, Unit2, Unit3,
-  DB5051, Ext, Txt, Obsah, Test, Snap7Com, Log;
+  DB5051, Ext, Txt, Obsah, Test, Snap7Com, Log, System.ImageList, Vcl.ImgList, SettingUI,
+  Vcl.PlatformDefaultStyleActnCtrls, System.Actions, Vcl.ActnList, Vcl.ActnMan, Settings;
 
 type
   TMainForm = class(TForm)
@@ -13,7 +14,7 @@ type
     BtnPLCCOM: TButton;
     BtnTest: TButton;
     BtnDB: TButton;
-    BtnFiles: TButton;
+    BtnSetting: TButton;
     PopupMenuPLC: TPopupMenu;
     PopupMenuTest: TPopupMenu;
     PopupMenuDB: TPopupMenu;
@@ -36,12 +37,22 @@ type
     TestPripojeniKPLC: TLabel;
     Button1: TButton;
     Login: TButton;
+    ImageList1: TImageList;
+    ActionManager1: TActionManager;
+    Bevel1: TBevel;
+    Panel2: TPanel;
+    UName: TPanel;
+    Panel4: TPanel;
+    Panel15: TPanel;
+    Panel6: TPanel;
+    FooterTimer: TTimer;
+    Button2: TButton;
     procedure OnTimer(Sender: TObject);
     procedure Snap(Sender: TObject);
     procedure PLCMenu(Sender: TObject);
     procedure TestMenu(Sender: TObject);
     procedure DBMenu(Sender: TObject);
-    procedure FilesMenu(Sender: TObject);
+    procedure NastaveniClicked(Sender: TObject);
     procedure ModBus(Sender: TObject);
     procedure U1(Sender: TObject);
     procedure U2(Sender: TObject);
@@ -56,12 +67,16 @@ type
     procedure SelectLanguage(Sender: TObject);
     procedure btnlogin(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FooterTimerTimer(Sender: TObject);
+   // procedure Bevel1Gesture(Sender: TObject; const EventInfo: TGestureEventInfo;
+   //   var Handled: Boolean);
 
     //procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     procedure DisableAllButtonsExceptLogin;  // Pøidáno pro login
     procedure EnableAllButtons;  // Pøidáno pro login
     { Private declarations }
+   // procedure Spodnimenu(StaticText: TStaticText);
     
 //FileTest
   public
@@ -81,6 +96,9 @@ type
     FormExtInstance: TForm9;  //Excell
     FormTxtInstance: TForm10;  //Txt
     FormLogInstance: TForm11; // Log
+    //Pøidat SettingsUI pro nastavení práv
+    FormSettingUIInstance: TForm14; // SettingUI
+    FormSettingsInstance: TForm13; // Settings
   end;
 
 var
@@ -88,7 +106,7 @@ var
 
 implementation
  uses
- GlobalData;
+ GlobalData, GlobalProc;
 {$R *.dfm}
 
 procedure TMainForm.DisableAllButtonsExceptLogin;
@@ -122,6 +140,14 @@ begin
     end;
 end;
 
+procedure Spodnimenu(StaticText: TStaticText);
+begin
+ StaticText.Font.Name := 'Arial';
+ StaticText.Font.Size := 14;
+ StaticText.Font.Style := [fsBold];
+ StaticText.Font.Color := clGreen;
+ StaticText.Alignment := taCenter;
+end;
 
 procedure TMainForm.Test(Sender: TObject);
 begin
@@ -212,6 +238,8 @@ if EnableCom=True then
   end;
 end;
 
+
+
 procedure TMainForm.btnlogin(Sender: TObject);
 begin
 //ShowMessage('Test Login');
@@ -264,12 +292,18 @@ begin
     end;
 end;
 
-procedure TMainForm.FilesMenu(Sender: TObject);
-var
-Point: TPoint;
+procedure TMainForm.NastaveniClicked(Sender: TObject);
 begin
-  Point := BtnFiles.ClientToScreen(TPoint.Create(0, BtnFiles.Height));
-  PopupMenuFiles.Popup(Point.X,Point.Y);
+ // Otevøené Settings
+  if not Assigned(FormSettingsInstance) then
+  begin
+    FormSettingsInstance := TForm13.Create(Self);
+    FormSettingsInstance.Show;
+  end
+  else
+  begin
+    FormSettingsInstance.SetFocus;
+  end;
 end;
 
 procedure TMainForm.FileTest(Sender: TObject);
@@ -278,9 +312,65 @@ begin
 end;
 
 
+procedure TMainForm.FooterTimerTimer(Sender: TObject);
+begin
+if GlobalData.Logged then
+  begin
+    case GlobalData.UserRole of
+    0: Panel15.Caption := '0';
+    1: Panel15.Caption := '1';
+    2: Panel15.Caption := '2';
+    else
+    Panel15.Caption := 'X';
+    end;
+  end
+  else
+  begin
+    Panel15.Caption := 'X';
+  end;
+  if GlobalData.ConnectedToPLC then
+  begin
+    Panel6.Caption := '1'; // Pøipojeno
+    Panel6.Color := clGreen;
+  end
+  else
+  begin
+    Panel6.Caption := '0'; // Nepøipojeno
+    Panel6.Color := clRed;  // Nefunguje
+  end;
+  Panel15.StyleElements := [];
+  Panel15.StyleElements := [seClient];
+
+  Panel4.StyleElements := [seClient];
+  Panel4.StyleElements := [];
+
+  Panel6.StyleElements := [];
+  Panel6.StyleElements := [seClient];
+
+  Panel4.Invalidate;
+  Panel6.Invalidate;
+  Panel15.Invalidate;
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-DisableAllButtonsExceptLogin;
+//DisableAllButtonsExceptLogin;
+//SpodniMenu();
+
+Panel15.Font.Size := 12;
+Panel15.Font.Style := [fsBold];
+Panel15.Alignment := taCenter;
+Panel15.Font.Color := clWhite;
+
+Panel6.Font.Size := 12;
+Panel6.Font.Style := [fsBold];
+Panel6.Alignment := taCenter;
+Panel6.Font.Color := clWhite;
+
+Panel4.Font.Size := 12;
+Panel4.Font.Style := [fsBold];
+Panel4.Alignment := taCenter;
+Panel4.Font.Color := clWhite;
 end;
 
 
@@ -312,7 +402,7 @@ end;
 
 procedure TMainForm.OnTimer(Sender: TObject);
 begin
-  Time.Caption:=FormatDateTime('dd.mm.yyyy hh:mm:ss', Now);
+  Time.Caption:=GetCurrentTime;
 end;
 
 procedure TMainForm.PLCMenu(Sender: TObject);

@@ -16,7 +16,11 @@ uses
   snap7 in 'snap7.pas',
   GlobalData in 'GlobalData.pas',
   Log in 'Log.pas' {Form11},
-  GlobalProc in 'GlobalProc.pas';
+  GlobalProc in 'GlobalProc.pas',
+  Dialog in 'Dialog.pas' {Form12},
+  Settings in 'Settings.pas' {Form13},
+  SettingUI in 'SettingUI.pas' {Form14},
+  Info in 'Info.pas' {Form15};
 
 {$R *.res}
 
@@ -36,5 +40,9 @@ begin
   Application.CreateForm(TForm9, Form9);
   Application.CreateForm(TForm10, Form10);
   Application.CreateForm(TForm11, Form11);
+  Application.CreateForm(TForm12, Form12);
+  Application.CreateForm(TForm13, Form13);
+  Application.CreateForm(TForm14, Form14);
+  Application.CreateForm(TForm15, Form15);
   Application.Run;
 end.

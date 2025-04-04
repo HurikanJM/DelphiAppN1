@@ -2,7 +2,7 @@ object Form11: TForm11
   Left = 0
   Top = 0
   Caption = 'Form11'
-  ClientHeight = 503
+  ClientHeight = 437
   ClientWidth = 348
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object Form11: TForm11
     Left = 0
     Top = 0
     Width = 348
-    Height = 503
+    Height = 437
     Align = alClient
     TabOrder = 0
     object Panel2: TPanel
@@ -62,10 +62,11 @@ object Form11: TForm11
       end
       object btnAction: TButton
         Left = 126
-        Top = 123
+        Top = 119
         Width = 75
         Height = 25
         Caption = 'btnAction'
+        Default = True
         TabOrder = 2
         OnClick = btnActionClick
       end

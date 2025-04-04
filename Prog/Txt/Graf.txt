@@ -1,0 +1,5 @@
+Segment A|25
+Segment B|15
+Segment C|30
+Segment D|10
+Segment E|20
